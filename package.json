@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage":"https://haroon-developerr.github.io/react-cicd-demo",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
