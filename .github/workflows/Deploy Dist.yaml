@@ -42,9 +42,21 @@ jobs:
               run: npm install
             - name: build project
               run: npm run build
+            - name: upload dist artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: dist-files
+                  path: dist
     deploy:
         needs: build
         runs-on: ubuntu-latest
         steps:
+            - name: download Dist Artifact
+              uses: actions/download-artifact@v4 
+              with:
+                  name: dist-files
+                  path: dist                         
             - name: deploy Code
-              run: echo "Deployed DIST"
+              run: |
+                echo "Deployed DIST"
+                ls dist
