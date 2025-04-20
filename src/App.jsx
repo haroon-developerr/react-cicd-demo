@@ -59,11 +59,44 @@ function App() {
     }
   };
 
+  const [resetCount, setResetCount] = useState(() => {
+    const storedCount = localStorage.getItem('resetCount');
+    return storedCount ? parseInt(storedCount) : 0;
+  });
+
+  const [resetDates, setResetDates] = useState(() => {
+    const storedDates = localStorage.getItem('resetDates');
+    return storedDates ? JSON.parse(storedDates) : [];
+  });
+
   const handleReset = () => {
+    if (time === 0 && !isRunning) {
+      alert("Timer is already reset!");
+      return;
+    }
+
     setIsRunning(false);
     setTime(0);
     localStorage.removeItem('startTime');
     localStorage.setItem('isRunning', 'false');
+
+    const newCount = resetCount + 1;
+    const newDates = [...resetDates, new Date().toLocaleString()];
+
+    setResetCount(newCount);
+    setResetDates(newDates);
+
+    localStorage.setItem('resetCount', newCount.toString());
+    localStorage.setItem('resetDates', JSON.stringify(newDates));
+  };
+
+  const handleClearLocalStorage = () => {
+    localStorage.clear();
+    setResetCount(0);
+    setResetDates([]);
+    setTime(0);
+    setIsRunning(false);
+    alert("All local storage data has been cleared!");
   };
 
   return (
@@ -99,6 +132,45 @@ function App() {
           }}
         >
           Reset Timer
+        </button>
+        {resetDates.length > 0 && (
+          <div style={{ marginTop: '20px' }}>
+            <h3>Reset History</h3>
+            <table style={{ margin: '0 auto', borderCollapse: 'collapse', width: '80%' }}>
+              <thead>
+                <tr>
+                  <th style={{ border: '1px solid black', padding: '8px' }}>#</th>
+                  <th style={{ border: '1px solid black', padding: '8px' }}>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {resetDates.map((date, index) => (
+                  <tr key={index}>
+                    <td style={{ border: '1px solid black', padding: '8px', textAlign: 'center' }}>{index + 1}</td>
+                    <td style={{ border: '1px solid black', padding: '8px' }}>{date}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        <h3 style={{ marginTop: '20px' }}>
+          Count: <strong>{resetCount}</strong>
+        </h3>
+
+        <button
+          onClick={handleClearLocalStorage}
+          style={{
+            padding: '10px 20px',
+            marginTop: '20px',
+            backgroundColor: '#2196F3',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+          }}
+        >
+          Clear Local Storage
         </button>
       </div>
     </>
